@@ -1,0 +1,100 @@
+// code has been taken from the coding challenge of the coding train
+// Logic available as psuedocode in wiki
+// Programmed in JS
+
+const coords=[]; // Empty array
+const hull=[]; // stores points on the hull
+
+let leftmost; // the leftmost point
+let currentvertex; // the current point on the hull
+let index=0; // the point being checked if that can be the next one on the hull
+let nextvertex; // 
+let nextIndex=-1;
+
+function setup() {
+  createCanvas(500, 500);
+  // Generate a set of random points
+  for(let i=0;i<50;i++)
+    {
+      coords.push(createVector(random(width),random(height)));
+    }
+  
+  // Sort the points
+  // a difference in x co-ordinate shows the position, a positive difference indicates the first point is on the right of second point and a negative difference vice-versa
+  coords.sort((a,b) => (a.x - b.x));
+  
+  // The leftmost point is the first point in the array
+  leftmost=coords[0];
+  currentvertex=leftmost;
+  hull.push(currentvertex);
+  nextvertex=coords[1]; 
+  index=2; // the point to be checked
+  
+}
+
+function draw() {
+  background(0); // black background
+  stroke(255);
+  strokeWeight(2);
+  for(let p of coords)
+    {
+      point(p.x,p.y);
+    }
+  
+  stroke(255);
+  strokeWeight(2);
+  beginShape();
+  for(let p of hull)
+    {
+      vertex(p.x,p.y);
+    }
+  endShape();
+  // make the leftmost point as blue
+  stroke(0,0,255);
+  strokeWeight(20);
+  point(leftmost.x,leftmost.y);
+  
+  // plot current vertex
+  stroke(0,255,255);
+  point(currentvertex.x,currentvertex.y);
+  
+  // join the points using line
+  stroke(0,0,255);
+  strokeWeight(2);
+  line(currentvertex.x,currentvertex.y,nextvertex.x,nextvertex.y)
+  
+  // show the point being checked
+  let check=coords[index];
+  stroke(255);
+  strokeWeight(2);
+  line(currentvertex.x,currentvertex.y,check.x,check.y);
+  
+  // taking the cross product to know the direction of the vectors
+  const a=p5.Vector.sub(nextvertex,currentvertex);
+  const b=p5.Vector.sub(check,currentvertex);
+  const cross=a.cross(b);
+
+  // check the direction based
+  if(cross.z < 0)
+{
+  nextvertex=check;
+  nextIndex=index;
+}  
+  index=index + 1;
+  if(index==coords.length)
+    if(nextvertex==leftmost)
+      {
+        console.log('Done');
+        noLoop();
+      }
+  else
+    {
+      hull.push(nextvertex);
+      currentvertex=nextvertex;
+      index=0;
+      //coords.splice(nextIndex,1);
+      nextvertex=leftmost;
+      //noLoop();
+    }
+
+}
