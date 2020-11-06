@@ -1,0 +1,95 @@
+Python code for Graham scan:
+
+from matplotlib import pyplot as pt# to plot the results
+from random import randint # to create random data points
+from math import atan2 # for calculation of the angle between the two vectors
+
+# first task is to get the data points -- in this case a set of randomly generated points but in the project I require to get the GPS co-ordinates from the MySQL DB
+def get_points(count, min=0,max=100): # min and max are the parameters decide the range of the random values generated# count gives the number of points to be generated
+	return [[randint(min,max),randint(min,max)]\
+	for _ in range(count)]				# _ indictaes that the loop varaiable is not used
+	
+# print 20 random data points
+print(get_points(20))
+
+# function to define and draw the convex hull and the points and connect them
+def scatter_plot(gps_coords,convex_hull=none):		# the convex hull parameter has a defualt value of none
+	xs,ys=zip(*gps_coords) # the x and y co-ordinates are separated in two different lists
+	pt.scatter(xs,ys)	# the x and the y co-ordinates are then plotted
+	
+	if convex_hull != none:
+		for i in range(1,len(convex_hull)+1):
+		if i==len(convex_hull):i=0
+		c0=convex_hull[i-1]
+		c1=convex_hull[i]
+		pt.plot((c0[0],c1[0]),(c0[1],c1[1]),'r')
+	pt.show()
+	
+#plot 20 data points
+scatter_plot(get_points(20))
+
+# helper function to calculate the polar angle between the vectors for sorting during the Graham scan
+def angle_calc(a0,a1=none):
+	if a1=none:a1=anchor			#anchor is a global variable that would be set in the graham scan function later
+	# we the vectors
+	y_vector=a0[1]-a1[1]
+	x_vector=a0[0]-a1[0]
+	return atan2(y_vector,x_vector)
+	
+def get_dist(a0,a1=none)
+	if a1=none:a1=anchor
+	#calculation of the distance
+	y_vector=a0[1]-a1[1]
+	x_vector=a0[0]-a1[0]
+	return y_vector**2 + x_vector**2
+	
+	
+# use of determinant to decideif the points are clockwise(-ve), anti-clock(+ve) or collinear(0)
+def det(a1,a2,a3):
+	return (p2[0]-p1[0])*(p3[1]-p1[1]) - (p2[1]-p1[1])*(p3[0]-p1[0])
+	
+# The function for the quicksort algorithm is developed now- quicksort is the sort that performs betters than the other sorts in time comparison
+def quicksort(a): # a is the unsorted array
+	if len(a)<=1:return a	# an array of length 0 or 1 is sorted- no need to sort it again
+	# create three lists
+	smaller,equal,larger=[],[],[] # stores values after comparison with the pivot value
+	piv_ang=angle_calc(a[randint(0,len(a)-1)])	# select a random value as the pivot value 
+	for pt in a:
+		pt_ang=angle_calc(pt)
+		if pt_ang<piv_ang: smaller.append(pt)
+		elif pt_ang==piv_ang: equal.append(pt)
+		else: larger.append(pt)
+	return quicksort(smaller) + sorted(equal,key=distance)+quicksort(larger)
+	
+# define the function for Graham scan
+def grahamscan(gps_coords,show=false)
+	global anchor  # global variable anchor declared
+	
+	# choosing the start point i.e pt with least y co-ordinate
+	min_index=none
+	for i,(x,y) in enumerate(gps_coords):
+		if min_index == None or y<gps_coords[min_index][1]:
+			min_index=i
+		if y==gps_coords[min_index][1] and x<points[min_index][0]:
+			min_index=i
+			
+	anchor=gps_coords[min_index]
+	sorted_pts=quicksort(gps_coords)
+	del sorted_pts[sorted_pts.index(anchor)]
+	
+	hull=[anchor,sorted_pts[0]]
+	for s in sorted_pts[1:]:
+		while det(hull[-2],hull[-1],s)<=0:
+			del hull[-1]
+			if len(hull)<2<<:break
+		hull.append(s)
+		if show:scatter_plot(gps_coords,hull)
+	return hull
+			
+			
+
+	
+
+
+	
+	
