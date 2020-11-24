@@ -1,0 +1,23 @@
+#Formula for Haversine
+# the above code aims to extract the GPS co-ordinates from a MySQL DB and then find the distance between them
+
+from math import sin, cos, sqrt, atan2, radians
+
+# approximate radius of earth in km
+R = 6371.0
+
+latitude_1 = radians(<lat_1>)
+longitude_1 = radians(<lon_1>)
+latitude_2 = radians(<lat_2>)
+longitude_2 = radians(<lon_2>)
+
+diff_longitude = longitude_2 - longitude_1
+diff_latitude = latitude_2 - latitude_1
+
+# haversine equation
+a = sin(diff_latitude / 2)**2 + cos(latitude_1) * cos(latitude_2) * sin(diff_longitude / 2)**2
+c = 2 * atan2(sqrt(a), sqrt(1 - a))
+
+dist_btw_GPS = R * c
+
+print("Result:", dist_btw_GPS)
