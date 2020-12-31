@@ -1,0 +1,48 @@
+import geopandas
+import osmnx as osm
+from shapely.geometry import Point,Polygon
+# name of the place for which the OSM data is required
+# take data from a table and convert that to points
+# This is a sample Python script.
+
+import mysql.connector as mysql # use of this package since using Anaconda - it is different for Python
+from math import sin, cos, sqrt, atan2, radians,asin
+import itertools
+# create connection
+con = mysql.connect(
+  host="localhost", user="root",
+  password="", database="gps_coord")
+
+# create cursor object
+cursor = con.cursor()
+
+# assign data query
+query1 = "select * from india_dist";
+
+# executing cursor
+cursor.execute(query1)
+
+# display all records
+table = cursor.fetchall()
+
+# point list
+points=[]
+
+# convert all entries to point data
+print("\nx co-ordinates")
+for x in table:
+  y=Point(x)
+  points.append(list(y.coords))
+  # print the x and the y co-ordinates separately
+  print(y.x)
+
+# print the list
+print("\nList of the co-ordinates")
+print(points)
+
+#print((p.x,p.y) for p in points)
+# creating Polygons
+print("\nPolygon")
+poly=Polygon(table)
+print((poly))
+
